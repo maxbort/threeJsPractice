@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
-import { texture } from 'three/webgpu';
 
 class App {
     constructor() {
@@ -25,7 +24,6 @@ class App {
         requestAnimationFrame(this.render.bind(this));
     }
 
-
     _setupControls() {
         new OrbitControls(this._camera, this._divContainer);
     }
@@ -39,7 +37,7 @@ class App {
             0.1,
             100
         );
-        camera.position.z = 3;
+        camera.position.z = 7;
         this._camera = camera;
     }
 
@@ -52,13 +50,29 @@ class App {
     }
 
     
-    _setupModel() {
+
+    _setupModel(){
         const textureLoader = new THREE.TextureLoader();
         const map = textureLoader.load(
-            "../assets/uv_grid_opengl.jpg",
-            texture => {}
+            "../../src/assets/uv_grid_opengl.jpg",
+            texture => {
+                texture.repeat.x = 1;
+                texture.repeat.y = 1;
+
+                texture.wrapS = THREE.ClampToEdgeWrapping;
+                texture.wrapT = THREE.ClampToEdgeWrapping;
+
+                texture.offset.x = 0;
+                texture.offset.y = 0;
+
+                texture.rotation = THREE.MathUtils.degToRad(0);
+                texture.center.x = 0.5;
+                texture.center.y = 0.5;
+
+                texture.magFilter = THREE.NearestFilter;
+                texture.minFilter = THREE.NearestMipMapLinearFilter;
+            }
         );
-        
         const material = new THREE.MeshStandardMaterial({
             map: map
         });
